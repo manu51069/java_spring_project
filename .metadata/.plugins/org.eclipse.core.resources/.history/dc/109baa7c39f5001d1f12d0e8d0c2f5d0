@@ -1,0 +1,13 @@
+package com.rakuten.maven;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+
+public class TestStudent {
+	
+	ApplicationContext context = new ClassPathXmlApplicationContext("studentContext.xml");
+	Student stu = (Student) context.getBean("stubean");
+	stu.displayStudent();
+}
+

@@ -1,0 +1,53 @@
+package jdbc.Functions;
+
+import java.sql.ResultSet;
+import java.util.Iterator;
+import java.util.List;
+
+
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
+
+
+public class TestJdbcTemplate {
+	static DriverManagerDataSource dataSource=new DriverManagerDataSource();
+	static JdbcTemplate template=null;
+
+	static void getConnection() {
+		dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
+		dataSource.setUrl("jdbc:mysql://localhost:3306/manu_database");
+		dataSource.setUsername("root");
+		dataSource.setPassword("Manu@135#");
+		template=new JdbcTemplate(dataSource);
+	}
+
+	static void insertDeptRecords(int deptno,String name,String location) {
+		String insert_query="insert into Departments"+"(deptno,name,location)values"+"(?,?,?)";
+		int result=template.update(insert_query,deptno,name,location);
+		if (result>0) {
+			System.out.println("inserted one new Depertment successfully");
+		}
+	}
+	static void fetchAllRecords() {
+		String select_all="select * from Departments";
+		RowMapper<Departments>rowMapper=new RowMapper<Departments>() {
+
+			public Departments mapRow(ResultSet rs,int rowNum) {
+				Integer deptno=rs.getInt("deptno");
+				String name=rs.getString("name");
+				String location=rs.getString("location");
+				return new Departments(deptno,name,location);
+			}
+		};
+		List<Departments>dpt=template.query(select_all, RowMapper);
+		System.out.println("dpetmo\t\tname\t\tlocation");
+		for (Departments d: dpt) {
+			System.out.println(d.deptno+"\t\t"+d.name+"\t\t"+d.location);
+		}
+	}
+	public static void main(String[] args) {
+		getConnection();
+		fetchAllRecords();
+	}
+}

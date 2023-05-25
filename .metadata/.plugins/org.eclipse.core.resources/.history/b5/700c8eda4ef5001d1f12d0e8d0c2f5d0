@@ -1,0 +1,55 @@
+package jdbc.Functions;
+
+import java.util.Scanner;
+
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
+
+public class SpringJdbcTest {
+
+	static DriverManagerDataSource dataSource=new DriverManagerDataSource();
+	static JdbcTemplate Template=null;
+
+	static void establishConnection() {
+		dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
+		dataSource.setUrl("jdbc:mysql://localhost:3306/manu_database");
+		dataSource.setUsername("root");
+		dataSource.setPassword("Manu@135#");
+	}
+
+	static void insertData(int deptno,String name,String loc) {
+		Template=new JdbcTemplate(dataSource);
+		String query="Insert into departments(deptno,name,location)values(?,?,?)";
+		int result=Template.update(query,deptno,name,loc);
+
+		if (result>0) {
+			System.out.println(result+"rows(s) has been Successfully updated.");
+		}
+	}
+	static void updateDeptLoc(String newVal) {
+		Template=new JdbcTemplate(dataSource);
+		String query="Update departments set location=?";
+		int result=Template.update(query,newVal);
+		if (result>0) {
+			System.out.println("The location has been Successfully updated.");
+		}
+		
+	}
+
+	public static void main(String[] args) {
+		establishConnection();
+		Scanner scan=new Scanner(System.in);
+	
+			System.out.println();
+
+			System.out.println("enter department id");
+			int deptno=scan.nextInt();
+			System.out.println("enter department name");
+			String name= scan.next();
+			System.out.println("enter department location");
+			String loc= scan.next();
+			String location=scan.next();	
+			insertData(deptno, name, location);
+
+	}
+}
